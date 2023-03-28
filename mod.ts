@@ -6,27 +6,23 @@ interface Option {
   loader: "css" | "text";
 }
 
-const loadSass = async function (path: string) {
-  const text = await Deno.readTextFile(path);
-
-  return sass(text, {
-    load_paths: [posix.dirname(path)],
-  }).to_string("compressed").toString();
-};
-
 const sassPlugin = (option?: Option): esbuild.Plugin => ({
   name: "esbuild-plugin-sass-deno",
   setup: (build) => {
-    build.onLoad(
-      { filter: /\.scss/ },
-      async (args) => {
-        const cssContent = await loadSass(posix.resolve(args.path));
-        return {
-          contents: cssContent,
-          loader: option?.loader ?? "css",
-        };
-      },
-    );
+    build.onLoad({ filter: /\.scss/ }, async (args) => {
+      const path = posix.resolve(args.path);
+      const text = await Deno.readTextFile(path);
+      const compiler = sass(text, {
+        load_paths: [posix.dirname(path)]
+      });
+      const cssContent = compiler.to_string().toString();
+
+      return {
+        contents: cssContent,
+        loader: option?.loader ?? "css",
+        watchFiles: compiler.get_read_files()
+      };
+    });
   },
 });
 
