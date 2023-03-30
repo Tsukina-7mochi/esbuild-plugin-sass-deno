@@ -1,13 +1,16 @@
-@import './module.scss';
+@import './defs.scss';
 
 body {
   h1 {
-    color: red;
+    color: $color-red;
   }
   p {
-    color: blue;
+    color: $color-blue;
   }
   a {
-    color: green;
+    color: $color-green;
+  }
+  button {
+    @include fancyButton;
   }
 }
