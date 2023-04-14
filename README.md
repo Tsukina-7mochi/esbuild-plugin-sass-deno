@@ -1,6 +1,6 @@
-# ESBuild Plugin SASS (Deno)
+# ESBuild Plugin Sass (Deno)
 
-Made for the poor souls trying to use SASS/SCSS on Deno using ESBuild as bundler
+Made for the poor souls trying to use Sass/Scss on Deno using ESBuild as bundler
 who did not know `esbuild-sass-plugin` was not compatible with Deno due to
 Dart-SASS being a pain.
 
