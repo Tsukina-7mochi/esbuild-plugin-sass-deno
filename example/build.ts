@@ -1,17 +1,17 @@
-import { esbuild } from '../deps.ts';
+import { esbuild } from "../deps.ts";
 import sassPlugin from "../mod.ts";
-import buildResultPlugin from 'https://raw.githubusercontent.com/Tsukina-7mochi/esbuild-plugin-result-deno/v1.0.4/mod.ts';
+import buildResultPlugin from "https://raw.githubusercontent.com/Tsukina-7mochi/esbuild-plugin-result-deno/v1.0.4/mod.ts";
 import { readLines } from "https://deno.land/std@0.181.0/io/mod.ts";
 
 const ctx = await esbuild.context({
   entryPoints: [
-    "example/styles.scss"
+    "example/styles.scss",
   ],
   bundle: true,
   outdir: "example",
   plugins: [
     sassPlugin(),
-    buildResultPlugin()
+    buildResultPlugin(),
   ],
 });
 

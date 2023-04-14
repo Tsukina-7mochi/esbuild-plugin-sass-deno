@@ -15,12 +15,12 @@ See `example` directory for details.
 
   await esbuild.build({
     entryPoints: [
-      "example/styles.scss"
+      "example/styles.scss",
     ],
     bundle: true,
     outdir: "example",
     plugins: [
-      sassPlugin()
+      sassPlugin(),
     ],
   });
 
@@ -33,14 +33,14 @@ See `example` directory for details.
 
   await esbuild.build({
     entryPoints: [
-      "example/injectCss.ts"
+      "example/injectCss.ts",
     ],
     bundle: true,
     outdir: "example",
     plugins: [
       sassPlugin({
-        loader: "text"
-      })
+        loader: "text",
+      }),
     ],
   });
 
