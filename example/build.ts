@@ -7,7 +7,7 @@ const ctx = await esbuild.context({
     "example/styles.scss",
   ],
   bundle: true,
-  outdir: "example",
+  outdir: "example/dist",
   plugins: [
     sassPlugin(),
   ],

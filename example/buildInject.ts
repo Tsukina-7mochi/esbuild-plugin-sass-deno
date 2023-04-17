@@ -6,7 +6,7 @@ await esbuild.build({
     "example/injectCss.ts",
   ],
   bundle: true,
-  outdir: "example",
+  outdir: "example/dist",
   plugins: [
     sassPlugin({
       loader: "text",
