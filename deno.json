@@ -4,5 +4,8 @@
       "deno.window",
       "dom"
     ]
+  },
+  "tasks": {
+    "build": "deno run -A ./example/build.ts"
   }
 }
