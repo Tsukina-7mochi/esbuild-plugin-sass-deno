@@ -9,6 +9,7 @@ Dart-SASS being a pain.
 See `example` directory for details.
 
 - Exporting as a single CSS file
+
   ```ts
   import * as esbuild from "https://deno.land/x/esbuild/mod.ts";
   import sassPlugin from "https://deno.land/x/esbuild_plugin_sass_deno/mod.ts";
@@ -18,15 +19,17 @@ See `example` directory for details.
       "example/styles.scss",
     ],
     bundle: true,
-    outdir: "example",
+    outdir: "dist",
     plugins: [
       sassPlugin(),
     ],
   });
 
-  esbuild.stop();
+  await esbuild.stop();
   ```
+
 - Inject style with JavaScript
+
   ```ts
   import * as esbuild from "https://deno.land/x/esbuild/mod.ts";
   import sassPlugin from "https://deno.land/x/esbuild_plugin_sass_deno/mod.ts";
@@ -36,7 +39,7 @@ See `example` directory for details.
       "example/injectCss.ts",
     ],
     bundle: true,
-    outdir: "example",
+    outdir: "dist",
     plugins: [
       sassPlugin({
         loader: "text",
@@ -44,9 +47,11 @@ See `example` directory for details.
     ],
   });
 
-  esbuild.stop();
+  await esbuild.stop();
   ```
+
   with `injectCss.ts`:
+
   ```ts
   import styles from "./styles.scss";
 
