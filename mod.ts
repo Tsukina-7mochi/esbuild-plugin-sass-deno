@@ -1,67 +1,26 @@
-import { esbuild } from "./deps.ts";
-import { posix } from "./deps.ts";
-import { sass } from "./deps.ts";
-import { fs } from "./deps.ts";
+import { esbuild, path, sass } from "./deps.ts";
 
 interface Option {
   loader: "css" | "text";
 }
 
-const moduleLoadRegExp =
-  /@(?:import|use|forward)\s*((?:"[^"]+"|'[^']+')(?:\s*,\s*(?:"[^"]+"|'[^']+'))*)\s*;/g;
-const listLoadedFiles = async function (globPath: string) {
-  let importedFiles: string[] = [];
-
-  for await (const file of fs.expandGlob(globPath)) {
-    if (file.isFile) {
-      importedFiles.push(file.path);
-
-      const content = await Deno.readTextFile(file.path);
-      const moduleLoads = content.matchAll(moduleLoadRegExp);
-      for (const match of moduleLoads) {
-        const files = match[1];
-        const fileRegExp = /("[^"]+"|'[^']+')\s*(?:,\s*)?/y;
-
-        let fileMatch = fileRegExp.exec(files);
-        while (fileMatch !== null) {
-          const importedInFile = await listLoadedFiles(
-            posix.resolve(posix.dirname(file.path), fileMatch[1].slice(1, -1)),
-          );
-          importedFiles = [
-            ...importedFiles,
-            ...importedInFile,
-          ];
-
-          fileMatch = fileRegExp.exec(files);
-        }
-      }
-    }
-  }
-
-  return importedFiles;
-};
-
 const sassPlugin = (option?: Option): esbuild.Plugin => {
-  const loadedFiles: Record<string, string[]> = {};
+  // TODO: cache sass compilation result
 
   return {
     name: "esbuild-plugin-sass-deno",
     setup: (build) => {
-      build.onLoad({ filter: /\.scss/ }, async (args) => {
-        const path = posix.resolve(args.path);
-        const text = await Deno.readTextFile(path);
-        const compiler = sass(text, {
-          load_paths: [posix.dirname(path)],
-        });
-        const cssContent = compiler.to_string().toString();
-        if (!(args.path in loadedFiles)) {
-          loadedFiles[args.path] = await listLoadedFiles(path);
-        }
+      build.onLoad({ filter: /\.s[ac]ss/ }, async (args) => {
+        const resolvedPath = path.resolve(args.path);
+        const result = await sass.compileAsync(resolvedPath);
+        const watchFiles = result.loadedUrls
+          .filter((url) => url.href.startsWith("file:"))
+          .map((url) => path.fromFileUrl(url));
 
         return {
-          contents: cssContent,
+          contents: result.css,
           loader: option?.loader ?? "css",
-          watchFiles: loadedFiles[args.path],
+          watchFiles,
         };
       });
     },
